@@ -52,15 +52,15 @@ class readEntry {
     this.complete = +entryArr[4];
     this.setFails();
     this.postcodes = entryArr.slice(5);
-    this.date = new Date(this.timeStamp);
   }
 
   getDate() {
-    let date = this.date;
+    const date = new Date(+this.timeStamp)
     return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
   }
 
   getDay() {
+    const date = new Date(+this.timeStamp)
     const days = [
       "Sunday",
       "Monday",
@@ -70,7 +70,7 @@ class readEntry {
       "Friday",
       "Saturday",
     ];
-    return days[this.date.getDay()];
+    return days[date.getDay()];
   }
 
   setFails() {
@@ -102,7 +102,7 @@ function addReadsToSheet(weekEntries, sheet) {
   let currentDate;
   let currentDay;
   weekEntries.forEach((entry, i) => {
-    let currentRow = 4 + i;
+    let currentRow = 5 + i;
     let rowVals = [
       "",
       "",
@@ -113,14 +113,14 @@ function addReadsToSheet(weekEntries, sheet) {
       entry.complete,
       entry.fails,
     ];
-    if (entry.getDay != currentDay) {
+    if (entry.getDay() != currentDay) {
       currentDate = entry.getDate();
       currentDay = entry.getDay();
       rowVals[0] = currentDay;
       rowVals[1] = currentDate;
     }
-
-    sheet.splice(currentRow, 0, rowVals);
+    console.log(rowVals)
+    sheet.spliceRows(currentRow, 0, rowVals);
   });
 }
 
@@ -145,6 +145,7 @@ async function createRouteSheet() {
   // Add totals then entries to file (totals first because rows won't be consistant week to week)
   addTotalsToSheet(weeksTotals, sheet);
   addReadsToSheet(weekEntries, sheet);
+
   // get fileName
   const date = new Date();
   const fileName = `Routesheet-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.xlsx`;
