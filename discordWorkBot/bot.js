@@ -11,12 +11,12 @@ client.login(process.env.TOKEN)
 
 client.on("message", message => {
     if (!recordMessages) {
-        if (message.content == "start") {
+        if (message.content == "!start") {
             console.log("started");
             recordMessages = true;
         } 
     } else if (recordMessages) {
-        if (message.content == "end") {
+        if (message.content == "!end") {
             console.log("ended")
             recordMessages = false;
         } else {
@@ -28,7 +28,7 @@ client.on("message", message => {
             } else {
                 const csvEntry = date.getTime() + "," + messageStr.split("..").join(",") + "\n";
                 console.log(csvEntry)
-                fs.appendFile("reads.csv", csvEntry, (err) => {
+                fs.appendFile("~/readsRecords/reads.csv", csvEntry, (err) => {
                     console.log(err);
                 })
             }
