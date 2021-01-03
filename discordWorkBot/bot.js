@@ -1,8 +1,11 @@
 require("dotenv").config();
+const path = require("path")
 const Discord = require("discord.js");
 const fs = require("fs");
 const client = new Discord.Client();
 
+
+const homedir = path.homedir
 let recordMessages = false;
 
 client.once("ready", () => console.log("ready"));
@@ -28,7 +31,7 @@ client.on("message", message => {
             } else {
                 const csvEntry = date.getTime() + "," + messageStr.split("..").join(",") + "\n";
                 console.log(csvEntry)
-                fs.appendFile("~/readsRecords/reads.csv", csvEntry, (err) => {
+                fs.appendFile(`${homedir}/readsRecords/reads.csv`, csvEntry, (err) => {
                     console.log(err);
                 })
             }
