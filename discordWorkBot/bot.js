@@ -39,7 +39,7 @@ client.on("message", message => {
                 message.reply(`Read entered: ${messageContent}`)
                 fs.appendFile(`${path.join(home, "/readsRecords/reads.csv")}`, csvEntry, (err) => {
                     console.log(err);
-                    message.reply(`Something went wrong: ${err.message}`)
+                    message.reply(`Something went wrong: ${err}`)
                     message.reply("Try again")
                 })
             }
