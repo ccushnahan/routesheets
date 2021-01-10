@@ -1,8 +1,11 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
-const zD = require("../helpers/zeroDate");
+const zeroDate = require("../helpers/zeroDate");
+const path = require("path");
+const os = require("os")
 
-const fileName = `Routesheet_${zD.zeroDate(date.getDate())}-${zD.zeroDate(date.getMonth() + 1)}-${date.getFullYear()}.xlsx`;
+const date = new Date();
+const fileName = `Routesheet_${zeroDate(date.getDate())}-${zeroDate(date.getMonth() + 1)}-${date.getFullYear()}.xlsx`;
 const filePath = path.join(os.homedir(), "/completedRoutesheets/", fileName)
 
 const transporter = nodemailer.createTransport({
@@ -21,7 +24,15 @@ const mailOptions = {
     attachments: [
         {
             filename: fileName,
-            content: filePath
+            path: filePath
         },
     ]
 }
+
+transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+        console.log(err)
+    } else {
+        console.log("Email sent: " + info.response);
+    }
+})

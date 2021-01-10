@@ -2,7 +2,7 @@ const fs = require("fs");
 const ExcelJS = require("exceljs");
 const path = require("path");
 const os = require("os");
-const zD = require("../helpers/zeroDate");
+const zeroDate = require("../helpers/zeroDate");
 
 function getTotals(entries) {
   const openings = entries.filter((ent) => ent.type == "o");
@@ -61,7 +61,7 @@ class readEntry {
 
   getDate() {
     const date = new Date(+this.timeStamp)
-    return `${zD.zeroDate(date.getDate())}-${zD.zeroDate(date.getMonth() + 1)}-${date.getFullYear()}`;
+    return `${zeroDate(date.getDate())}-${zeroDate(date.getMonth() + 1)}-${date.getFullYear()}`;
   }
 
   getDay() {
@@ -155,7 +155,7 @@ async function createRouteSheet() {
 
   // get fileName
   const date = new Date();
-  const fileName = `Routesheet_${zD.zeroDate(date.getDate())}-${zD.zeroDate(date.getMonth() + 1)}-${date.getFullYear()}.xlsx`;
+  const fileName = `Routesheet_${zeroDate(date.getDate())}-${zeroDate(date.getMonth() + 1)}-${date.getFullYear()}.xlsx`;
   const filePath = path.join(os.homedir(), "/completedRoutesheets/", fileName)
 
   // save new file
