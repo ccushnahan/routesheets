@@ -1,5 +1,8 @@
 const fs = require("fs");
 const ExcelJS = require("exceljs");
+const path = require("path");
+const os = require("os");
+const zD = require("../helpers/zeroDate");
 
 function getTotals(entries) {
   const openings = entries.filter((ent) => ent.type == "o");
@@ -27,8 +30,10 @@ function sumEntries(entries) {
 }
 
 function readCSV(fileName) {
+  const home = os.homedir()
+  const csvPath = path.join(home, "/readsRecords/reads.csv");
   return fs
-    .readFileSync("/home/cush/projects/workRouteSheet/reads.csv", "utf8")
+    .readFileSync(csvPath, "utf8")
     .split("\n");
 }
 
@@ -46,17 +51,17 @@ class readEntry {
   constructor(entryString) {
     let entryArr = entryString.split(",");
     this.timeStamp = entryArr[0];
-    this.type = entryArr[1];
+    this.type = entryArr[1].toLowerCase();
     this.name = entryArr[2];
     this.attempts = +entryArr[3];
     this.complete = +entryArr[4];
     this.setFails();
-    this.postcodes = entryArr.slice(5);
+    this.postcodes = entryArr.slice(5).join("").toUpperCase();
   }
 
   getDate() {
     const date = new Date(+this.timeStamp)
-    return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+    return `${zD.zeroDate(date.getDate())}-${zD.zeroDate(date.getMonth() + 1)}-${date.getFullYear()}`;
   }
 
   getDay() {
@@ -124,10 +129,12 @@ function addReadsToSheet(weekEntries, sheet) {
   });
 }
 
+
+
 async function createRouteSheet() {
   // open and load template
   const templateFile =
-    "/home/cush/projects/workRouteSheet/createWorkRouteSheet/template.xlsx";
+    path.join(os.homedir(), "projects/routesheets/createWorkRouteSheet/template.xlsx");
   const templateBook = new ExcelJS.Workbook();
   await templateBook.xlsx.readFile(templateFile);
 
@@ -148,11 +155,12 @@ async function createRouteSheet() {
 
   // get fileName
   const date = new Date();
-  const fileName = `Routesheet-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}.xlsx`;
+  const fileName = `Routesheet_${zD.zeroDate(date.getDate())}-${zD.zeroDate(date.getMonth() + 1)}-${date.getFullYear()}.xlsx`;
+  const filePath = path.join(os.homedir(), "/completedRoutesheets/", fileName)
 
   // save new file
   const newBook = templateBook;
-  await newBook.xlsx.writeFile(fileName);
+  await newBook.xlsx.writeFile(filePath);
 }
 
 createRouteSheet();

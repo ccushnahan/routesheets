@@ -16,4 +16,3 @@ Get entries within 7 days of current date
 filter entries based on type to sum for end of week totals
 
 Add entries to template
-
