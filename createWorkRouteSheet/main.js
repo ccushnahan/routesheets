@@ -3,6 +3,7 @@ const ExcelJS = require("exceljs");
 const path = require("path");
 const os = require("os");
 const zeroDate = require("../helpers/zeroDate");
+const RouteSheet = require("./services/createRouteSheet")
 
 function getTotals(entries) {
   const openings = entries.filter((ent) => ent.type == "o");
@@ -163,4 +164,18 @@ async function createRouteSheet() {
   await newBook.xlsx.writeFile(filePath);
 }
 
-createRouteSheet();
+// createRouteSheet();
+
+const date = new Date();
+const fileName = `Routesheet_${zeroDate(date.getDate())}-${zeroDate(date.getMonth() + 1)}-${date.getFullYear()}.xlsx`;
+const filePath = path.join(os.homedir(), "/completedRoutesheets/", fileName)
+const templateFile =
+  path.join(os.homedir(), "projects/routesheets/createWorkRouteSheet/template.xlsx");
+let csvEntries = readCSV();
+const entries = csvEntries
+  .filter((line) => line != "")
+  .map((line) => new readEntry(line));
+const weekEntries = getEntriesWithinWeek(entries);
+
+const routesheet = new RouteSheet(weekEntries, templateFile, filePath);
+routesheet.createRouteSheet();

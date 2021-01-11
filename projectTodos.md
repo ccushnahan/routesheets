@@ -2,13 +2,13 @@
 
 ## Create route sheet
 
-- Test it works on the pi
+- Test it works on the pi -> **Should work**
 - At minute it only adds what is there
     - Create process to add in missing days with off?
 
 ## Send route sheet
 
-- Set up script to email the completed routesheet to me
+- Set up script to email the completed routesheet to me **DONE**
 - Write script to take query db to get a user with a specified email address
 
 ## Work bot
@@ -35,7 +35,7 @@
 
 ## Raspberry Pi stuff
 
-- Set up cron to run createRouteSheet on a sunday
+- Set up cron to run createRouteSheet on a sunday **DONE**
 - Set up script to backup files to a mounted usb stick
 - Mount a usb stick to backup files to
 - Create a script to email reads.csv to an email address (amrroutesheetbackups@gmail.com) and create cron job to run it daily
