@@ -1,3 +1,5 @@
+const zeroDate = require("../../helpers/zeroDate")
+
 class ReadEntry {
     constructor(entryString) {
         let entryArr = entryString.split(",");
@@ -39,6 +41,4 @@ class ReadEntry {
     }
 }
 
-module.exports = {
-    ReadEntry
-}
+module.exports = ReadEntry;

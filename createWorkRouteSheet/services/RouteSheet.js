@@ -1,7 +1,11 @@
-const ExcelJS = require("exceljs")
+const ExcelJS = require("exceljs");
+const getFileName = require("../../helpers/getFileName");
+const getTemplateFile = require("./getTemplateFile")
+const WeeksEntries = require("./WeeksEntries");
+
 
 class RouteSheet {
-    constructor(entries, templateName, fileName) {
+    constructor(templateName = getTemplateFile(), entries = new WeeksEntries().getWeeksEntries(), fileName = getFileName()) {
         this.entries = entries;
         this.templateName = templateName;
         this.fileName = fileName;
