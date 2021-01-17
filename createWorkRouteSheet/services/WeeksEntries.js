@@ -35,7 +35,7 @@ class WeeksEntries {
     }
 
     setWeeksStart() {
-        const currentDay = this.weeksEnd.getDay();
+        let currentDay = this.weeksEnd.getDay();
         if (currentDay == 0) currentDay = 7;
         const WEEKLENGTH = currentDay * 24 * 60 * 60 * 1000;
         const startWeek = new Date(this.weeksEnd - WEEKLENGTH).getTime();
