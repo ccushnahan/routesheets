@@ -71,8 +71,9 @@ class RouteSheet {
             }
             rowEntries.push([]);
             return rowEntries;
-        }).flat().reverse();
-        readEntries.forEach(row => sheet.insertRow(5, row, "i"));
+        });
+
+        [].concat(...readEntries).reverse().forEach(row => sheet.insertRow(5, row, "i"));
     }
 
     async createRouteSheet() {
@@ -82,6 +83,7 @@ class RouteSheet {
 
         const sheet = templateBook.worksheets[0];
         const file = this.fileName;
+        console.log(file)
 
         this.addTotalsToSheet(sheet);
         this.addReadsToSheet(sheet);
