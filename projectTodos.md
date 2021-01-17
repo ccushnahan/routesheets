@@ -5,6 +5,9 @@
 - Test it works on the pi -> **Should work**
 - At minute it only adds what is there
     - Create process to add in missing days with off?
+- Move opening csv to the routeSheet class rather than the weekEntries class
+- Pass WeekEntries an array of data
+- Go through make getters and setters for everything
 
 ## Send route sheet
 

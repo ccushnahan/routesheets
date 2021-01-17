@@ -1,42 +1,32 @@
 const ExcelJS = require("exceljs");
 const getFileName = require("../../helpers/getFileName");
+const gfd = require("../../helpers/getFormattedDate");
 const getTemplateFile = require("./getTemplateFile")
 const WeeksEntries = require("./WeeksEntries");
 
-
 class RouteSheet {
-    constructor(templateName = getTemplateFile(), entries = new WeeksEntries().getWeeksEntries(), fileName = getFileName()) {
+    constructor(templateName = getTemplateFile(), entries = new WeeksEntries(), fileName = getFileName()) {
         this.entries = entries;
         this.templateName = templateName;
         this.fileName = fileName;
     }
 
-    getTotals() {
-        const openings = this.entries.filter((ent) => ent.type == "o");
-        const annuals = this.entries.filter((ent) => ent.type == "a");
-        const quarterlys = this.entries.filter((ent) => ent.type == "q");
-        const monthlys = this.entries.filter((ent) => ent.type == "m");
-        const specials = this.entries.filter((ent) => ent.type == "s");
-
-        const totals = {
-            quarterlyReads: this.sumEntries(quarterlys),
-            monthlyReads: this.sumEntries(monthlys),
-            annualReads: this.sumEntries(annuals),
-            specialReads: this.sumEntries(specials),
-            openingReads: this.sumEntries(openings),
+    sortWeeksEntries() {
+        const week = {
+            "Monday": [],
+            "Tuesday": [],
+            "Wednesday": [],
+            "Thursday": [],
+            "Friday": [],
+            "Saturday": [],
         };
 
-        return totals;
-    }
-
-    sumEntries(entryArray) {
-        let attempts = entryArray.reduce((total, entry) => total + entry.attempts, 0);
-        let complete = entryArray.reduce((total, entry) => total + entry.complete, 0);
-        return [attempts, complete, attempts - complete];
+        this.entries.getWeeksEntries().forEach(entry => week[entry.getDay()].push(entry));
+        return week;
     }
 
     addTotalsToSheet(sheet) {
-        const weekTotals = this.getTotals();
+        const weekTotals = this.entries.getWeeksTotals();
         const totalStartCol = 6;
         let totalRowNum = 7;
 
@@ -52,29 +42,37 @@ class RouteSheet {
     }
 
     addReadsToSheet(sheet) {
-        let currentDate;
-        let currentDay;
-        this.entries.forEach((entry, i) => {
-            let currentRow = 5 + i;
-            let rowVals = [
-                "",
-                "",
-                entry.postcodes,
-                "",
-                entry.name,
-                entry.attempts,
-                entry.complete,
-                entry.fails,
-            ];
-            if (entry.getDay() != currentDay) {
-                currentDate = entry.getDate();
-                currentDay = entry.getDay();
-                rowVals[0] = currentDay;
-                rowVals[1] = currentDate;
+        const sortedWeek = this.sortWeeksEntries()
+        const readEntries = Object.entries(sortedWeek).map(day => {
+            console.log(day);
+            const dayName = day[0];
+            const rowEntries = [];
+            if (day[1].length == 0) {
+                const weeksDates = this.entries.getWeeksDates();
+                rowEntries.push([dayName, gfd(weeksDates[dayName])]);
+            } else {
+                day[1].forEach((entry, i) => {
+                    let rowVals = [
+                        "",
+                        "",
+                        entry.postcodes,
+                        "",
+                        entry.name,
+                        entry.attempts,
+                        entry.complete,
+                        entry.fails,
+                    ];
+                    if (i == 0) {
+                        rowVals[0] = dayName;
+                        rowVals[1] = entry.getDate();
+                    }
+                    rowEntries.push(rowVals);
+                });
             }
-            console.log(rowVals)
-            sheet.spliceRows(currentRow, 0, rowVals);
-        });
+            rowEntries.push([]);
+            return rowEntries;
+        }).flat().reverse();
+        readEntries.forEach(row => sheet.insertRow(5, row, "i"));
     }
 
     async createRouteSheet() {
